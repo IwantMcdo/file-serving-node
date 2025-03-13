@@ -3,9 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Node.js File Server</title>
 </head>
 <body>
     <h1>Welcome to the Node.js File Server</h1>
+    
+    <h2>Upload a File</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <label for="file">Choose a file:</label>
+        <input type="file" name="file" id="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>Uploaded Files</h2>
+    <ul id="file-list"></ul>
+
+    <script>
+        // Fetch and display uploaded files
+        async function fetchFiles() {
+            try {
+                const response = await fetch('/files');
+                const files = await response.json();
+                const fileList = document.getElementById('file-list');
+                fileList.innerHTML = "";
+                files.forEach(file => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = `/uploads/${file}`;
+                    a.textContent = file;
+                    a.target = "_blank";
+                    li.appendChild(a);
+                    fileList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Error fetching files:", error);
+            }
+        }
+        
+        fetchFiles();
+    </script>
 </body>
 </html>
